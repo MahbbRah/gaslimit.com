@@ -1,0 +1,157 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+
+html,
+body {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.search-bar,
+.ads-result-set,
+.ad_view_area,
+.folders_view_area,
+.folder_single_area {
+  margin-top: 40px;
+}
+
+.margin-20-pxtop {
+  margin-top: 20px;
+}
+
+.ads-result-set {
+  background-color: #ddd;
+  padding: 15px;
+  max-height: 400px;
+  /* overflow-x: hidden; */
+  overflow-y: scroll;
+}
+
+.show-basic-log {
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: -30px;
+}
+
+.fix_lnk_style,
+.fix_lnk_style:hover {
+  color: rgba(255, 255, 255, .55);
+  text-decoration: none;
+}
+
+.show-running-spinner {
+  margin-top: 10px;
+  margin-left: 47%;
+}
+
+.single-folder {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  margin: 10px;
+  padding: 10px;
+  align-items: center;
+  box-shadow: 2px 2px 7px 3px #ddd;
+  cursor: pointer;
+}
+
+.single-folder:hover {
+  background-color: #ece7e754;
+}
+
+.single-folder span {}
+
+.back-button-top-page {
+  margin-bottom: 10px;
+}
+
+.back-button-top-page>button {
+  color: #fff
+}
+
+.buttons-action-area-ad-view {
+  display: flex;
+  flex-direction: row;
+}
+
+.delete-ad-from-folder-btn {
+  margin-left: 10px;
+}
+
+
+#starBtnShow-action {
+  color: rgb(13, 110, 253);
+  margin-left: 45%;
+  cursor: pointer;
+}
+
+#starBtnShow-action:hover {
+  color: rgb(7, 72, 168);
+}
+
+.favorite-section-header {
+  margin-top: 30px;
+}
+
+.rm-fv-btn- {
+  margin-left: 20px;
+}
+
+.ml-5 {
+  margin-left: 5px;
+}
+
+.search_ad_inp_bx {
+  width: 100%;
+}
+
+.show-filter-opt {
+  margin-top: 3rem;
+}
+
+.rbt-aux .rbt-close {
+  border: none;
+}
+
+/* login/Register !forms page */
+.login-content-page {
+  padding-top: 10vh;
+
+}
+
+.login-page-form {
+  background-color: azure;
+  padding: 5vh;
+  box-shadow: 4px 2px 2px 1px #005C97;
+  border-radius: 1vh;
+}
+
+.login-page-form h2 {
+  margin-bottom: 5vh;
+  font-weight: bold;
+}
+
+.login-footer-wrapper>* {
+  margin-right: 5px;
+}
+
+.login-footer-wrapper a {
+  text-decoration: none;
+}

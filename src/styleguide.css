@@ -1,0 +1,103 @@
+:root { 
+  --black: #000000;
+  --manatee: #939dae;
+  --nevada: #616a7b;
+  --quill-gray: #d4d4d4;
+  --shark: #22202c;
+  --turquoise: #2ed1c2;
+  --white: #ffffff;
+  --wild-blue-yonder: #7e96b8;
+  --zircon: #f5f8fc;
+ 
+  --font-size-l: 14px;
+  --font-size-m: 13px;
+  --font-size-xl: 16px;
+  --font-size-xxl: 18px;
+  --font-size-xxxl: 20px;
+  --font-size-xxxxl: 24px;
+ 
+  --font-family-roboto: "Roboto", Helvetica;
+}
+.roboto-normal-wild-blue-yonder-13px {
+  color: var(--wild-blue-yonder);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.roboto-normal-white-14px {
+  color: var(--white);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.roboto-normal-black-16px {
+  color: var(--black);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.roboto-normal-wild-blue-yonder-16px {
+  color: var(--wild-blue-yonder);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.roboto-normal-manatee-14px {
+  color: var(--manatee);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-l);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.roboto-medium-shark-13px {
+  color: var(--shark);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.roboto-normal-white-16px {
+  color: var(--white);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.roboto-normal-nevada-16px {
+  color: var(--nevada);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.roboto-normal-black-20px {
+  color: var(--black);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xxxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.border-2px-turquoise {
+  border: 2px solid var(--turquoise);
+}
+
+.border-2px-shark {
+  border: 2px solid var(--shark);
+}
+
+.border-1px-quill-gray {
+  border: 1px solid var(--quill-gray);
+}

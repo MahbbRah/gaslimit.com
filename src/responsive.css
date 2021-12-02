@@ -1,0 +1,147 @@
+/* 
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+
+    /* CSS */
+
+}
+
+/* 
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+
+    /* CSS */
+
+}
+
+/* 
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    /* .footer-left-section-gaslimit {
+        display: flex;
+    }
+
+    body {
+        background-color: #ccc;
+    } */
+
+}
+
+/* 
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+
+    /* CSS */
+
+}
+
+/* 
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+
+    /* CSS */
+    .footer-left-section-gaslimit {
+        flex-direction: column;
+    }
+
+    .footer-left-section-gaslimit img {
+        justify-content: center;
+    }
+
+    .footer-content-data-sec {
+        flex-direction: column;
+    }
+
+    .footer-menu-gaslimit {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .footer-left-section-gaslimit img {
+        margin: 0 auto;
+    }
+
+    .footer-left-section-gaslimit ul.footer-menu-gaslimit li {
+        margin-left: 0;
+    }
+
+    .footer-section-nav-icons {
+        display: flex;
+        justify-content: center;
+    }
+
+}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+
+    .header-right-section {
+        margin-top: 10px;
+    }
+
+    .select-source-eth {
+        padding-right: 4px;
+    }
+
+    .gas-lmtaccountEtherBal {
+        margin-left: 4px;
+        font-size: 11px;
+    }
+
+    .gas-header-settings {
+        margin-left: 5px;
+        cursor: pointer;
+        height: 40px;
+        width: 40px;
+    }
+
+    .footer-left-section-gaslimit {
+        flex-direction: column;
+    }
+
+    .footer-left-section-gaslimit img {
+        justify-content: center;
+    }
+
+    .footer-content-data-sec {
+        flex-direction: column;
+    }
+
+    .footer-menu-gaslimit {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .footer-left-section-gaslimit img {
+        margin: 0 auto;
+    }
+
+    .footer-left-section-gaslimit ul.footer-menu-gaslimit li {
+        margin-left: 0;
+    }
+
+    .footer-section-nav-icons {
+        display: flex;
+        justify-content: center;
+    }
+}
