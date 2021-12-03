@@ -57,11 +57,6 @@ const menuItems = [
     icon: <BSCLogo />,
   },
   {
-    key: "0x61",
-    value: "Smart Chain Testnet",
-    icon: <BSCLogo />,
-  },
-  {
     key: "0x89",
     value: "Polygon",
     icon: <PolygonLogo />,
@@ -115,7 +110,7 @@ function Chains() {
 
   const handleMenuClick = (e) => {
     console.log("switch to: ", e.key);
-    switchNetwork(e.key).then(response => console.log(`switchNetworkResponse`,response))
+    switchNetwork(e.key)
   };
 
   const menu = (

@@ -1,8 +1,8 @@
-import { Container, Row, Col, Button} from 'react-bootstrap';
+import { Container, Row, Col} from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select'
 import Moralis from 'moralis'
-// import { useNativeBalance } from "react-moralis";
+// import { useMoralis } from "react-moralis";
 import { FaAngry, FaTwitter } from 'react-icons/fa'
 import { BsGear } from 'react-icons/bs'
 import { IoMdSync } from 'react-icons/io'
@@ -15,7 +15,8 @@ import { BiTransfer, BiGasPump } from 'react-icons/bi'
 import { FiGithub } from 'react-icons/fi'
 
 import Chains from '../Chains';
-
+import NativeBalance from '../NativeBalance'
+import AccountDetail from '../AccountDetail'
 // import ProgressBar from "@ramonak/react-progress-bar";
 // import axios from 'axios';
 // import { io } from "socket.io-client";
@@ -78,14 +79,16 @@ import logoImgWithText from './../../assets/mask-group-4@1x.png';
 
 
 function Home() {
-  
+  // const { getBalance, data: balance, nativeToken } = useNativeBalance({ chain: "eth" });
+
   const [ tokens, setTokens ] = useState("");
   const [ currentUser, setCurrentUser ] = useState(null);
  
-  useEffect(() => { 
+  useEffect(() => {
 
-    
     init();
+    // console.log(`selectedChainFromHome`, getBalance, balance, nativeToken)
+
 
   }, []);
 
@@ -96,6 +99,8 @@ function Home() {
     await listAvailableTokens();
     const User = Moralis.User.current();
     // Moralis.Web3.cha
+    console.log(`selectUser`, User)
+
     setCurrentUser(User)
     if (User) {
       document.getElementById("swap_button").disabled = false;
@@ -118,11 +123,11 @@ function Home() {
 
   
 
-  const options = [
-    { value: 'Etherum', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Etherum</span></div> },
-    { value: 'strawberry', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Strawberry</span></div> },
-    { value: 'bitcoin', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Bitcoin</span></div> }
-  ]
+  // const options = [
+  //   { value: 'Etherum', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Etherum</span></div> },
+  //   { value: 'strawberry', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Strawberry</span></div> },
+  //   { value: 'bitcoin', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Bitcoin</span></div> }
+  // ]
 
   const optionsCurr = [
     { value: 'Etherum', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>ETH</span></div> },
@@ -144,6 +149,7 @@ function Home() {
         <Col md={{ span: 5, offset: 3}} className="header-right-section">
           <div className="select-source-eth">
             <Chains />
+            
           </div>
           {/* <div className="select-source-eth">
             <Select options={options} classNamePrefix="eth-src-select" components={{
@@ -152,8 +158,10 @@ function Home() {
           </div> */}
           <div className="gas-lmtaccountBalance">
             <img src={accountIconLogo} alt="Account Logo" srcset="" className="acc-logo-small-gas-limit" />
-            <p>0</p>
+            <NativeBalance />
           </div>
+          <AccountDetail />
+
           <div className="gas-lmtaccountEtherBal">
             <FaAngry color="#FFD3A2" className="iconOnBalanceico"/>
             <p>0.0862 ETH</p>
