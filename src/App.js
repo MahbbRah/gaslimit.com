@@ -1,4 +1,5 @@
 import { Switch, Route } from 'react-router-dom';
+import "antd/dist/antd.css";
 import './App.css'
 import './responsive.css'
 import Home from './components/home'

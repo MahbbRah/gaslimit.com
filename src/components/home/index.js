@@ -1,7 +1,8 @@
 import { Container, Row, Col, Button} from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select'
-
+import Moralis from 'moralis'
+// import { useNativeBalance } from "react-moralis";
 import { FaAngry, FaTwitter } from 'react-icons/fa'
 import { BsGear } from 'react-icons/bs'
 import { IoMdSync } from 'react-icons/io'
@@ -12,43 +13,110 @@ import { TiMessages } from 'react-icons/ti'
 import { RiCalendarCheckLine, RiStackshareLine } from 'react-icons/ri'
 import { BiTransfer, BiGasPump } from 'react-icons/bi'
 import { FiGithub } from 'react-icons/fi'
+
+import Chains from '../Chains';
+
 // import ProgressBar from "@ramonak/react-progress-bar";
 // import axios from 'axios';
 // import { io } from "socket.io-client";
-// import { API } from '../../config/config';
+import { serverUrl, appId } from '../../config/config';
 
 import logoImg from './../../assets/gas-limit-ic.png'
 import accountIconLogo from './../../assets/one-inch@1x.png';
 import logoImgWithText from './../../assets/mask-group-4@1x.png';
+
+
+
+// const menuItems = [
+//   {
+//     key: "0x1",
+//     value: "0x1",
+//     label: <div><ETHLogo /> <span>Ethereum</span></div>
+//   },
+//   {
+//     value: "0x539",
+//     label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Local Chain</span></div>
+//   },
+//   {
+//     value: "0x3",
+//     label: <div><ETHLogo /> <span>Ropsten Testnet</span></div>
+//   },
+//   {
+//     value: "0x4",
+//     label: <div><ETHLogo /> <span>Rinkeby Testnet</span></div>
+//   },
+//   {
+//     value: "0x2a",
+//     label: <div><ETHLogo /><span>Kovan Testnet</span></div>
+//   },
+//   {
+//     value: "0x5",
+//     label: <div><ETHLogo /> <span>Goerli Testnet</span></div>
+//   },
+//   {
+//     value: "0x38",
+//     label: <div><BSCLogo /> <span>Binance</span></div>
+//   },
+//   {
+//     value: "0x61",
+//     label: <div><BSCLogo /><span>Smart Chain Testnet</span></div>
+//   },
+//   {
+//     value: "0x89",
+//     label: <div><PolygonLogo /> <span>Polygon</span></div>
+//   },
+//   {
+//     value: "0x13881",
+//     label: <div><PolygonLogo /> <span>Mumbai</span></div>
+//   },
+//   {
+//     value: "0xa86a",
+//     label: <div><AvaxLogo /> <span>Avalanche</span></div>
+//   },
+// ];
+
+
+
 function Home() {
   
-  // const [ file, setFile ] = useState("");
-  // const [ statusMsg, setStatusMsg ] = useState("");
+  const [ tokens, setTokens ] = useState("");
+  const [ currentUser, setCurrentUser ] = useState(null);
  
   useEffect(() => { 
 
-    //set the host dynamically
-    // let host = window.location.host;
-    // if (host.includes("localhost:")) {
-    //   host = "localhost";
-    // }
-    // setCurrentHost(host);
     
- 
-
-    // let userID =  localStorage.getItem("userID");
-    // if(!userID){
-    //   // let newUid =  new Date().getTime();
-
-    //   let userData = JSON.parse(localStorage.getItem("userData"));
-    //   userID = userData._id;
-    //   localStorage.setItem("userID", userID);
-    // }
-
-    // setUserID(userID);
-
+    init();
 
   }, []);
+
+
+  async function init() {
+    await Moralis.start({ serverUrl, appId });
+    await Moralis.enableWeb3();
+    await listAvailableTokens();
+    const User = Moralis.User.current();
+    // Moralis.Web3.cha
+    setCurrentUser(User)
+    if (User) {
+      document.getElementById("swap_button").disabled = false;
+    }
+  }
+
+  async function listAvailableTokens() {
+    const result = await Moralis.Plugins.oneInch.getSupportedTokens({
+      chain: "eth", // The blockchain you want to use (eth/bsc/polygon)
+    });
+    setTokens(result.tokens);
+    // for (const address in tokens) {
+    //   let token = tokens[address];
+    //   // let html = `
+    //   //   <img class="token_list_img" src="${token.logoURI}">
+    //   //   <span class="token_list_text">${token.symbol}</span>
+    //   //   `;
+    // }
+  }
+
+  
 
   const options = [
     { value: 'Etherum', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Etherum</span></div> },
@@ -62,6 +130,8 @@ function Home() {
     { value: 'bitcoin', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>FIY</span></div> }
   ]
 
+  
+
   return (
     <Container fluid>
       <Row className="header-area">
@@ -73,10 +143,13 @@ function Home() {
         </Col>
         <Col md={{ span: 5, offset: 3}} className="header-right-section">
           <div className="select-source-eth">
+            <Chains />
+          </div>
+          {/* <div className="select-source-eth">
             <Select options={options} classNamePrefix="eth-src-select" components={{
               IndicatorSeparator: () => null
             }}/>
-          </div>
+          </div> */}
           <div className="gas-lmtaccountBalance">
             <img src={accountIconLogo} alt="Account Logo" srcset="" className="acc-logo-small-gas-limit" />
             <p>0</p>

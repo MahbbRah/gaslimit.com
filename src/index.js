@@ -1,18 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { MoralisProvider } from "react-moralis";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import "./styleguide.css"
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { serverUrl, appId } from './config/config';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Router basename="/fb_scraper">
-      <App />
-    </Router>
-  </React.StrictMode>,
+  <MoralisProvider appId={appId} serverUrl={serverUrl}>
+    <React.StrictMode>
+      <Router basename="/dev">
+        <App />
+      </Router>
+    </React.StrictMode>
+  </MoralisProvider>
+  ,
   document.getElementById('root')
 );
 

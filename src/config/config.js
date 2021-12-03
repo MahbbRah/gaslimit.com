@@ -4,6 +4,10 @@ if (host.includes("localhost:")) {
     host = "localhost";
 }
 
+const serverUrl = "https://uchvmdaszegr.usemoralis.com:2053/server"; //Server url from moralis.io
+const appId = "tTgshxlLwlocP7zUKTjPq2etiAvOxTuyAd1zc1Vg"; // Application id from moralis.io
+
+
 const API = {
     ROOT: `http://${host}:3036/api/v1/`,
     SOCKETHOST: `http://${host}:4041`,
@@ -38,5 +42,7 @@ const API = {
 }
 
 module.exports = {
-    API
+    API,
+    serverUrl,
+    appId
 }
