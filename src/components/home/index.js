@@ -1,9 +1,8 @@
 import { Container, Row, Col} from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select'
-import Moralis from 'moralis'
-// import { useMoralis } from "react-moralis";
-import { FaAngry, FaTwitter } from 'react-icons/fa'
+import {useMoralis} from 'react-moralis'
+import { FaTwitter } from 'react-icons/fa'
 import { BsGear } from 'react-icons/bs'
 import { IoMdSync } from 'react-icons/io'
 import { AiOutlinePlusCircle, AiOutlineReddit, AiFillYoutube, AiOutlineMedium, AiOutlineMail } from 'react-icons/ai'
@@ -14,129 +13,191 @@ import { RiCalendarCheckLine, RiStackshareLine } from 'react-icons/ri'
 import { BiTransfer, BiGasPump } from 'react-icons/bi'
 import { FiGithub } from 'react-icons/fi'
 
+import useInchDex from '../../hooks/useInchDex'
+import useTokenPrice from '../../hooks/useTokenPrice'
+import { c2, tokenValueTxt, tokenValue } from "../../helpers/formatters";
+
 import Chains from '../Chains';
-import NativeBalance from '../NativeBalance'
 import AccountDetail from '../AccountDetail'
-// import ProgressBar from "@ramonak/react-progress-bar";
-// import axios from 'axios';
-// import { io } from "socket.io-client";
-import { serverUrl, appId } from '../../config/config';
 
 import logoImg from './../../assets/gas-limit-ic.png'
 import accountIconLogo from './../../assets/one-inch@1x.png';
 import logoImgWithText from './../../assets/mask-group-4@1x.png';
 
 
+const customStyles = {
+  menu: (provided, state) => ({
+    ...provided,
+    width: state.selectProps.width
+  }),
+}
 
-// const menuItems = [
-//   {
-//     key: "0x1",
-//     value: "0x1",
-//     label: <div><ETHLogo /> <span>Ethereum</span></div>
-//   },
-//   {
-//     value: "0x539",
-//     label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Local Chain</span></div>
-//   },
-//   {
-//     value: "0x3",
-//     label: <div><ETHLogo /> <span>Ropsten Testnet</span></div>
-//   },
-//   {
-//     value: "0x4",
-//     label: <div><ETHLogo /> <span>Rinkeby Testnet</span></div>
-//   },
-//   {
-//     value: "0x2a",
-//     label: <div><ETHLogo /><span>Kovan Testnet</span></div>
-//   },
-//   {
-//     value: "0x5",
-//     label: <div><ETHLogo /> <span>Goerli Testnet</span></div>
-//   },
-//   {
-//     value: "0x38",
-//     label: <div><BSCLogo /> <span>Binance</span></div>
-//   },
-//   {
-//     value: "0x61",
-//     label: <div><BSCLogo /><span>Smart Chain Testnet</span></div>
-//   },
-//   {
-//     value: "0x89",
-//     label: <div><PolygonLogo /> <span>Polygon</span></div>
-//   },
-//   {
-//     value: "0x13881",
-//     label: <div><PolygonLogo /> <span>Mumbai</span></div>
-//   },
-//   {
-//     value: "0xa86a",
-//     label: <div><AvaxLogo /> <span>Avalanche</span></div>
-//   },
-// ];
 
+const chainIds = {
+  "0x1": "eth",
+  "0x38": "bsc",
+  "0x89": "polygon",
+};
+
+const getChainNameByID = (chainID) => {
+
+  let chainName = chainIds[chainID];
+  chainName = chainName ? chainName : 'eth' //default eth chain
+  return chainName
+}
 
 
 function Home() {
   // const { getBalance, data: balance, nativeToken } = useNativeBalance({ chain: "eth" });
+  const { fetchTokenPrice } = useTokenPrice()
+  const { Moralis, isAuthenticated } = useMoralis();
+  const [ quote, setQuote ] = useState(null);
+  const [swapAmount, setSwapAmount ] = useState(0);
 
-  const [ tokens, setTokens ] = useState("");
-  const [ currentUser, setCurrentUser ] = useState(null);
+  const [ selectedFrom, setSelectedForm ] = useState(null);
+  const [ fromTokenPrice, setFromTokenprice ] = useState(null);
+  const [fromTokenPriceUSD, setFromTokenPriceUSD ] = useState(null);
+
+  const [ selectedTo, setSelectedTo ] = useState(null);
+  // const [ toTokenPrice, setToTokenprice ] = useState(null);
+  const [toTokenPriceUSD, setToTokenPriceUSD ] = useState(null);
+
+  const { trySwap, tokenList, getQuote } = useInchDex("eth");
+
  
   useEffect(() => {
-
-    init();
     // console.log(`selectedChainFromHome`, getBalance, balance, nativeToken)
+    console.log(`tokenList`, tokenList)
 
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const optionsCurr = tokenList && Object.keys(tokenList).map((tokenIndex) => {
+    let token = tokenList[tokenIndex];
+    return { 
+      value: token.symbol,
+      label: <div><img src={token.logoURI} alt="" width={20} /> <span>{token.symbol}</span></div>,
+      logoURI: token.logoURI,
+      name: token.name,
+      address: tokenIndex,
+      decimals: token.decimals,
+    }
+  })
 
-  async function init() {
-    await Moralis.start({ serverUrl, appId });
-    await Moralis.enableWeb3();
-    await listAvailableTokens();
-    const User = Moralis.User.current();
-    // Moralis.Web3.cha
-    console.log(`selectUser`, User)
+  const fetchUSDPrice = async (selection) => {
 
-    setCurrentUser(User)
-    if (User) {
-      document.getElementById("swap_button").disabled = false;
+    try {
+      let getUSDPrice = await fetchTokenPrice({ chain: 'eth', address: selection.address })
+      const { value, decimals, symbol } = getUSDPrice.nativePrice;
+      getUSDPrice.nativePrice = tokenValueTxt(value, decimals, symbol);
+      setFromTokenprice(getUSDPrice);
+      setFromTokenPriceUSD(getUSDPrice.usdPrice)
+    } catch (error) {
+      console.log(error);
+      alert(error.error)
     }
   }
 
-  async function listAvailableTokens() {
-    const result = await Moralis.Plugins.oneInch.getSupportedTokens({
-      chain: "eth", // The blockchain you want to use (eth/bsc/polygon)
-    });
-    setTokens(result.tokens);
-    // for (const address in tokens) {
-    //   let token = tokens[address];
-    //   // let html = `
-    //   //   <img class="token_list_img" src="${token.logoURI}">
-    //   //   <span class="token_list_text">${token.symbol}</span>
-    //   //   `;
-    // }
+  const tryGetQuote = (paramsGetQuote) => {
+
+    const { selectedF, selectedT, swapAmt } = paramsGetQuote;
+    if (!selectedF || !selectedT || swapAmt === 0) return;
+    const getChain = getChainNameByID(localStorage.getItem("currentChain"));
+    const params = {
+      fromToken: selectedF,
+      toToken: selectedT,
+      fromAmount: swapAmt,
+      chain: getChain
+    }
+    console.log(`requesting for Qoute with these params`, params)
+    getQuote(params)
+    .then(quoteResponse => {
+      console.log(`quoteResponse`, quoteResponse);
+      setQuote(quoteResponse);
+    })
   }
 
-  
+  const trySwapReq = () => {
+    
+    const getChain = getChainNameByID(localStorage.getItem("currentChain"));
 
-  // const options = [
-  //   { value: 'Etherum', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Etherum</span></div> },
-  //   { value: 'strawberry', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Strawberry</span></div> },
-  //   { value: 'bitcoin', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>Bitcoin</span></div> }
-  // ]
+    const trySwapParams = { 
+      fromToken: quote?.fromToken, 
+      fromAmount: swapAmount, 
+      chain: getChain
+    }
 
-  const optionsCurr = [
-    { value: 'Etherum', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>ETH</span></div> },
-    { value: 'strawberry', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>BTC</span></div> },
-    { value: 'bitcoin', label: <div><img src={accountIconLogo} alt="" width={20} /> <span>FIY</span></div> }
-  ]
+    //check if we have require values!
+    if (trySwapParams.fromToken && swapAmount && isAuthenticated) trySwap(trySwapParams)
+    
+  }
 
-  
+  const fetchUSDPriceTo = async (selection) => {
 
+    try {
+      let getUSDPrice = await fetchTokenPrice({ chain: 'eth', address: selection.address })
+      const { value, decimals, symbol } = getUSDPrice.nativePrice;
+      getUSDPrice.nativePrice = tokenValueTxt(value, decimals, symbol);
+      // setToTokenprice(getUSDPrice);
+      setToTokenPriceUSD(getUSDPrice.usdPrice);
+    } catch (error) {
+      console.log(error);
+      alert(error.error)
+    }
+  }
+
+
+  const updateSelectedUsdPrice = (event) => {
+    const { value } = event.target;
+    /* TODO: validate input fields for string */
+    // const re = /^[0-9\b]+$/;
+    // if (re.test(value) || value === ''){
+      
+      
+    // }
+
+    const inputPrice = Number(value);
+    // console.log(`inputPrice`, inputPrice)
+    let perTokenPrice = fromTokenPrice?.usdPrice
+    const calcPrice = perTokenPrice * inputPrice;
+    setSwapAmount(inputPrice)
+    setFromTokenPriceUSD(calcPrice);
+    tryGetQuote({
+      selectedF: selectedFrom,
+      selectedT: selectedTo,
+      swapAmt: inputPrice
+    });
+  }
+
+  const PriceSwapCharges = () => {
+    const Quote = quote;
+    if (!Quote) return null;
+    if (Quote?.statusCode === 400) return <>{Quote.message}</>;
+    console.log(Quote);
+    const { fromTokenAmount, toTokenAmount } = Quote;
+    const { value: fromSymbol } = selectedFrom;
+    const { value: toSymbol } = selectedTo;
+    const pricePerToken = parseFloat(
+      tokenValue(fromTokenAmount, selectedFrom["decimals"]) / tokenValue(toTokenAmount, selectedTo["decimals"])
+    ).toFixed(6);
+    const pricePerTokenTo = parseFloat(
+      tokenValue(toTokenAmount, selectedFrom["decimals"]) / tokenValue(fromTokenAmount, selectedTo["decimals"])
+    ).toFixed(6);
+    return (
+      <>
+        <div className="you-to-select-convert-cost">
+          <p>1 {toSymbol} cost</p>
+          <b>{pricePerToken} {fromSymbol}</b>
+        </div>
+        <div className="you-to-select-convert-cost">
+          <p>1 {fromSymbol} cost</p>
+          <b>{pricePerTokenTo} {toSymbol}</b>
+        </div>
+      </>
+    );
+  };
+
+  // console.log(`tokenPrice`, tokenPrice, fromTokenPrice)
   return (
     <Container fluid>
       <Row className="header-area">
@@ -157,16 +218,11 @@ function Home() {
             }}/>
           </div> */}
           <div className="gas-lmtaccountBalance">
-            <img src={accountIconLogo} alt="Account Logo" srcset="" className="acc-logo-small-gas-limit" />
-            <NativeBalance />
+            <img src={accountIconLogo} alt="Account Logo" className="acc-logo-small-gas-limit" />
+            <p>0</p>
+            {/* <NativeBalance /> */}
           </div>
           <AccountDetail />
-
-          <div className="gas-lmtaccountEtherBal">
-            <FaAngry color="#FFD3A2" className="iconOnBalanceico"/>
-            <p>0.0862 ETH</p>
-            <p>0xe001...5020</p>
-          </div>
           <div className="gas-header-settings">
             <BsGear color="#ddd" size={21} className="header-settings-icon"/>
           </div>
@@ -195,18 +251,31 @@ function Home() {
             <p className="main-section-help-txt">You Pay</p>
             <div className="you-pay-input-fields">
               <div className="you-pay-select-coin">
-                <p className="payl-select-curr-name">Wrapped Ether</p>
+                <p className="payl-select-curr-name">{selectedFrom ? selectedFrom.name : ''}</p>
                 <Select 
                   options={optionsCurr}
                   classNamePrefix="select-you-pay-curr" 
                   components={{
                     IndicatorSeparator: () => null
-                  }} 
+                  }}
+                  onChange={selection => {
+                    console.log(`selectToken`, selection)
+                    setSelectedForm(selection);
+                    fetchUSDPrice(selection)
+                    // TODO: Needs to update the swapAmount I guess
+                    tryGetQuote({
+                      selectedF: selection,
+                      selectedT: selectedTo,
+                      swapAmt: swapAmount
+                    });
+                  
+                  }}
+                  styles={customStyles}
                 />
               </div>
               <div className="you-pay-enter-amnt">
-                <p className="pay-enter-curr-usd-amnt">~$4,336</p>
-                <input type="text" value="0" />
+                <p className="pay-enter-curr-usd-amnt">~{fromTokenPriceUSD ? c2.format(fromTokenPriceUSD) : '0'}</p>
+                <input type="text" placeholder="0" onChange={updateSelectedUsdPrice} />
               </div>
             </div>
           </div>
@@ -217,18 +286,35 @@ function Home() {
             <p className="main-section-help-txt">You Receive</p>
             <div className="you-pay-input-fields">
               <div className="you-pay-select-coin">
-                <p className="payl-select-curr-name">Dai Stablecoin</p>
+                <p className="payl-select-curr-name">{selectedTo ? selectedTo.name : ''}</p>
                 <Select 
                   options={optionsCurr}
                   classNamePrefix="select-you-pay-curr" 
                   components={{
                     IndicatorSeparator: () => null
-                  }} 
+                  }}
+                  styles={customStyles}
+                  onChange={selection => {
+                    console.log(`selectToken`, selection)
+                    setSelectedTo(selection);
+                    fetchUSDPriceTo(selection)
+                    tryGetQuote({
+                      selectedF: selectedFrom,
+                      selectedT: selection,
+                      swapAmt: swapAmount
+                    });
+
+                  }}
                 />
               </div>
               <div className="you-pay-enter-amnt">
-                <p className="pay-enter-curr-usd-amnt">~$4,336</p>
-                <input type="text" value="0" />
+                <p className="pay-enter-curr-usd-amnt">~{toTokenPriceUSD ? c2.format(toTokenPriceUSD) : '0'}</p>
+                <input 
+                  type="text" 
+                  placeholder="0.00"
+                  value={quote ? Moralis.Units.FromWei(quote?.toTokenAmount, quote?.toToken?.decimals).toFixed(6) : ""}
+                  disabled
+                />
               </div>
             </div>
           </div>
@@ -260,20 +346,16 @@ function Home() {
             </div>
           </div>
           <div className="transaction-states-market-gaslimit">
-            <div className="you-to-select-convert-cost">
-              <p>1 ETH cost</p>
-              <b>43,23234 DAI</b>
-            </div>
-            <div className="you-to-select-convert-cost">
-              <p>1 ETH cost</p>
-              <b>43,23234 DAI</b>
-            </div>
-            <div className="you-to-select-convert-cost">
-              <p>Current Market Transaction cost</p>
-              <b>$68.16 0.0157 Ξ</b>
-            </div>
+            <PriceSwapCharges />
+            {quote && (
+              <div className="you-to-select-convert-cost">
+                <p>Current Market Transaction cost</p>
+                <b>{quote?.estimatedGas} Ξ</b>
+              </div>
+            )}
+            
           </div>
-          <div className="confirm-order-btn-section">
+          <div className="confirm-order-btn-section" onClick={trySwapReq}>
             <RiCalendarCheckLine size={35} className="confrm-ordr-btn-icon"/>
             <b>Review Swap Order</b>
           </div>
@@ -292,7 +374,7 @@ function Home() {
         <div className="footer-border-top-sect"></div>
         <div className="footer-content-data-sec">
           <div className="footer-left-section-gaslimit">
-            <img src={logoImgWithText} alt="" srcset="" />
+            <img src={logoImgWithText} alt="" />
             <ul className="footer-menu-gaslimit">
               <li className="footer-menu-item-gaslimit"><a href="/">Tokens</a></li>
               <li className="footer-menu-item-gaslimit"><a href="/">API</a></li>

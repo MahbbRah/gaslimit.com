@@ -477,8 +477,6 @@ h1:after {
   font-weight: 400;
 }
 
-.footer-section-nav-icons {}
-
 .footer-btn-icons-social {
   margin-left: 15px;
 }
@@ -494,4 +492,8 @@ h1:after {
   font-size: var(--font-size-l);
   font-style: normal;
   font-weight: 400;
+}
+
+.authenticate-btn-header{
+  
 }

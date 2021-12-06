@@ -3,6 +3,7 @@ import { Menu, Dropdown, Button } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { AvaxLogo, PolygonLogo, BSCLogo, ETHLogo } from "./Logos";
 import { useChain } from "react-moralis";
+import Moralis  from 'moralis';
 
 const styles = {
   item: {
@@ -77,7 +78,14 @@ function Chains() {
   const { switchNetwork, chainId, chain } = useChain();
   const [selected, setSelected] = useState({});
 
-  console.log("chain", chain)
+  Moralis.onChainChanged((changedChain) => {
+    localStorage.setItem("currentChain", changedChain);
+    console.log(`changedChain`, changedChain)
+  })
+
+  if (chainId) localStorage.setItem("currentChain", chainId)
+  
+  console.log("chain", chain, chainId)
   /* selected chain object
     {
       "name": "Ethereum Mainnet",

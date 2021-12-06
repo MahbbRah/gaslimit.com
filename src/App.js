@@ -1,4 +1,8 @@
 import { Switch, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+
+import { useMoralis } from "react-moralis";
+
 import "antd/dist/antd.css";
 import './App.css'
 import './responsive.css'
@@ -13,6 +17,14 @@ import Home from './components/home'
 
 
 function App() {
+
+  const { isWeb3Enabled, enableWeb3, isAuthenticated, isWeb3EnableLoading } = useMoralis();
+  useEffect(() => {
+    if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading) enableWeb3();
+    // console.log(`selectedChainFromHome`, getBalance, balance, nativeToken)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, isWeb3Enabled]);
 
   //do not redirect if the path is registration
   // const pathReg = window.location.pathname.includes("/register")
