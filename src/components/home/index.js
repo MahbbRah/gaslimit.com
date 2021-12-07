@@ -16,6 +16,7 @@ import { FiGithub } from 'react-icons/fi'
 import useInchDex from '../../hooks/useInchDex'
 import useTokenPrice from '../../hooks/useTokenPrice'
 import { c2, tokenValueTxt, tokenValue } from "../../helpers/formatters";
+import { getWrappedNative } from "../../helpers/networks";
 
 import Chains from '../Chains';
 import AccountDetail from '../AccountDetail'
@@ -45,6 +46,8 @@ const getChainNameByID = (chainID) => {
   chainName = chainName ? chainName : 'eth' //default eth chain
   return chainName
 }
+
+const IsNative = (address) => address === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 
 
 function Home() {
@@ -87,7 +90,11 @@ function Home() {
   const fetchUSDPrice = async (selection) => {
 
     try {
-      let getUSDPrice = await fetchTokenPrice({ chain: 'eth', address: selection.address })
+      const getChain = localStorage.getItem("currentChain")
+      const tokenAddress = IsNative(selection.address) ? getWrappedNative(getChain) : selection.address;
+      const fetchTokenPricePayload = { chain: getChain, address: tokenAddress };
+      console.log(`fetchTokenPricePayload`, fetchTokenPricePayload)
+      let getUSDPrice = await fetchTokenPrice(fetchTokenPricePayload)
       const { value, decimals, symbol } = getUSDPrice.nativePrice;
       getUSDPrice.nativePrice = tokenValueTxt(value, decimals, symbol);
       setFromTokenprice(getUSDPrice);
@@ -135,7 +142,10 @@ function Home() {
   const fetchUSDPriceTo = async (selection) => {
 
     try {
-      let getUSDPrice = await fetchTokenPrice({ chain: 'eth', address: selection.address })
+      const getChain = localStorage.getItem("currentChain")
+      const tokenAddress = IsNative(selection.address) ? getWrappedNative(getChain) : selection.address;
+
+      let getUSDPrice = await fetchTokenPrice({ chain: getChain, address: tokenAddress })
       const { value, decimals, symbol } = getUSDPrice.nativePrice;
       getUSDPrice.nativePrice = tokenValueTxt(value, decimals, symbol);
       // setToTokenprice(getUSDPrice);

@@ -10,9 +10,8 @@ const useInchDex = (chain) => {
       console.log(`plugins couldnt find onINce`)
       return null
     };
-    console.log(`got the token!`)
     Moralis.Plugins.oneInch.getSupportedTokens({ chain }).then((tokens) => {
-      console.log(`tokensFromSystem:`, tokens)
+      console.log(`tokensFromSystem:`)
       // for (let itemObj in tokens.tokens){
       //   console.log(tokens.tokens[itemObj], 'tokkk');
       // }

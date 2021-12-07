@@ -13,8 +13,6 @@ function AccountDetail(props) {
     let first6 =  accNo.slice(0, 6);
     let last4 =  accNo.slice(-4);
     accountID =  `${first6}...${last4}`;
-    console.log(`Acc Conencted!`)
-    console.log(`userFromAccountDetail`, user.get('accounts')[0])
   
   }
 
@@ -31,7 +29,7 @@ function AccountDetail(props) {
           background: "none",
           border: "none",
           fontWeight: "bold"
-      }} onClick={() => authenticate()}>Authenticate</button>
+      }} onClick={() => authenticate()}>Connect Wallet</button>
     </div>
   );
 }
