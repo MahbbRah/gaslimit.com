@@ -130,6 +130,7 @@ function Home() {
 
     const trySwapParams = { 
       fromToken: quote?.fromToken, 
+      toToken: quote?.toToken,
       fromAmount: swapAmount, 
       chain: getChain
     }
